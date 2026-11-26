@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010">
+<title>JPS Chat — Vidéos & photos</title>
+<style>
+:root{--bg:#090909;--panel:#151515;--muted:#aaa;--red:#f02d3a;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px/1.45 Arial, sans-serif}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+.app{max-width:1100px;margin:auto;min-height:100vh;display:grid;grid-template-columns:220px minmax(0,1fr) 260px;gap:24px;padding:0 18px}
+.sidebar{position:sticky;top:0;height:100vh;padding:25px 8px;border-right:1px solid #252525}
+.logo{font-size:28px;font-weight:900;letter-spacing:-1.5px;margin:0 0 35px}.logo span{color:var(--red)}
+.nav{display:grid;gap:9px}.nav button{background:transparent;text-align:left;padding:13px 14px;border-radius:12px;font-weight:700}.nav button.active,.nav button:hover{background:#202020}.nav .ico{display:inline-block;width:29px;font-size:19px}
+.main{padding:20px 0 90px;min-width:0}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.top h1{font-size:21px;margin:0}.top small{color:var(--muted)}
+.feed{max-width:620px;margin:auto}.video-card{position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(145deg,#262626,#111);height:min(72vh,690px);min-height:440px;display:flex;align-items:center;justify-content:center;border:1px solid #292929}
+.video-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,#343434 0,transparent 55%),linear-gradient(0deg,rgba(0,0,0,.8),transparent 55%)}
+.placeholder{z-index:1;text-align:center;padding:25px;color:#ddd}.play{font-size:54px;color:white;text-shadow:0 2px 20px #000}.placeholder p{color:#bbb;max-width:270px;margin:12px auto}
+.video-info{position:absolute;z-index:2;left:18px;right:82px;bottom:18px}.video-info strong{font-size:16px}.video-info p{margin:6px 0 0;color:#eee}
+.actions{position:absolute;z-index:3;right:13px;bottom:22px;display:grid;gap:17px;text-align:center}.action{background:transparent;display:grid;justify-items:center;gap:3px;font-size:12px}.action b{font-size:25px}.action.liked b{color:var(--red)}
+.feed-tabs{display:flex;justify-content:center;gap:24px;color:var(--muted);font-weight:700;margin:0 0 16px}.feed-tabs .selected{color:white;border-bottom:2px solid var(--red);padding-bottom:8px}
+.right{padding:28px 0}.panel{background:var(--panel);border:1px solid #292929;border-radius:16px;padding:17px;margin-bottom:16px}.panel h3{margin:0 0 10px;font-size:16px}.panel p{margin:0;color:var(--muted);font-size:13px}.profile-row{display:flex;align-items:center;gap:11px}.avatar{width:42px;height:42px;border-radius:50%;background:var(--red);display:grid;place-items:center;font-weight:900}.redbtn{background:var(--red);padding:11px 15px;border-radius:10px;font-weight:800}.outline{background:#262626;padding:10px 13px;border-radius:10px}
+.bottom{display:none}.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal.open{display:flex}.dialog{background:#181818;border:1px solid #333;border-radius:18px;padding:22px;width:min(100%,430px)}.dialog h2{margin:0 0 15px}.dialog input,.dialog textarea{width:100%;padding:12px;background:#090909;color:white;border:1px solid #444;border-radius:9px;margin:7px 0 13px}.dialog textarea{min-height:90px;resize:vertical}.dialog .row{display:flex;gap:9px;justify-content:flex-end}
+@media(max-width:850px){.app{grid-template-columns:70px minmax(0,1fr);gap:12px;padding:0 10px}.sidebar{padding:20px 0}.logo{font-size:0;text-align:center}.logo:after{content:"J";font-size:28px;color:var(--red)}.nav button{font-size:0;text-align:center;padding:13px 5px}.nav .ico{font-size:21px;width:auto}.right{display:none}}
+@media(max-width:560px){.app{display:block;padding:0}.sidebar{display:none}.main{padding:16px 10px 78px}.top{padding:0 4px}.video-card{height:calc(100dvh - 160px);min-height:440px;border-radius:14px}.feed-tabs{margin-bottom:12px}.bottom{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:#111;border-top:1px solid #333;padding:10px 4px calc(10px + env(safe-area-inset-bottom));z-index:5}.bottom button{background:none;font-size:11px;display:grid;gap:3px;justify-items:center}.bottom b{font-size:20px}.top small{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">JPS<span> CHAT</span></div>
+  <nav class="nav">
+    <button class="active"><span class="ico">⌂</span>Accueil</button>
+    <button onclick="notice('La recherche sera connectée dans une prochaine étape.')"><span class="ico">⌕</span>Découvrir</button>
+    <button onclick="openPublish()"><span class="ico">＋</span>Publier</button>
+    <button onclick="notice('La messagerie sera activée dans une prochaine étape.')"><span class="ico">✉</span>Messages</button>
+    <button onclick="notice('Les profils seront connectés aux comptes utilisateurs dans une prochaine étape.')"><span class="ico">◎</span>Profil</button>
+  </nav>
+</aside>
+<main class="main">
+  <header class="top"><div><h1>JPS Chat</h1><small>Exprime-toi. Partage. Inspire.</small></div><button class="redbtn" onclick="openPublish()">＋ Publier</button></header>
+  <section class="feed">
+    <div class="feed-tabs"><span class="selected">Pour toi</span><span>Abonnements</span></div>
+    <article class="video-card">
+      <div class="placeholder"><div class="play">▶</div><strong>Bienvenue sur JPS Chat</strong><p>Ton espace pour découvrir et partager des vidéos et des photos.</p><button class="outline" onclick="openPublish()">＋ Créer une publication</button></div>
+      <div class="video-info"><strong>@jpschat_officiel</strong><p>Bienvenue dans la communauté JPS Chat ❤️ #JPSChat</p></div>
+      <div class="actions">
+        <button class="action" id="likeBtn" onclick="toggleLike()"><b>♡</b><span id="likeCount">0</span></button>
+        <button class="action" onclick="notice('Les commentaires seront disponibles après la connexion à la base de données.')"><b>▢</b><span>Commenter</span></button>
+        <button class="action" onclick="sharePage()"><b>↗</b><span>Partager</span></button>
+      </div>
+    </article>
+  </section>
+</main>
+<aside class="right">
+  <div class="panel"><div class="profile-row"><div class="avatar">J</div><div><strong>Bienvenue !</strong><p>Sur JPS Chat</p></div></div></div>
+  <div class="panel"><h3>Ta communauté</h3><p>Publie tes premières vidéos et photos. Les autres fonctionnalités seront activées au fil de la construction.</p></div>
+  <div class="panel"><h3>À propos</h3><p>JPS Chat — un réseau social pour partager tes moments.</p></div>
+</aside>
+</div>
+<nav class="bottom">
+  <button><b>⌂</b>Accueil</button><button onclick="notice('La recherche sera activée prochainement.')"><b>⌕</b>Découvrir</button><button onclick="openPublish()"><b>＋</b>Publier</button><button onclick="notice('Messagerie bientôt disponible.')"><b>✉</b>Messages</button><button onclick="notice('Profil bientôt disponible.')"><b>◎</b>Profil</button>
+</nav>
+<div class="modal" id="publishModal" role="dialog" aria-modal="true">
+  <div class="dialog"><h2>Créer une publication</h2>
+    <p style="color:#aaa;font-size:13px">Cette première version est une maquette interactive. L'envoi réel des médias sera ajouté avec le stockage sécurisé.</p>
+    <label for="caption">Légende</label><textarea id="caption" placeholder="Que souhaites-tu partager ?"></textarea>
+    <label for="media">Choisir une photo ou une vidéo (aperçu local)</label><input id="media" type="file" accept="image/*,video/*">
+    <div class="row"><button class="outline" onclick="closePublish()">Annuler</button><button class="redbtn" onclick="demoPublish()">Continuer</button></div>
+  </div>
+</div>
+<script>
+let liked=false;
+function toggleLike(){liked=!liked;document.getElementById('likeBtn').classList.toggle('liked',liked);document.querySelector('#likeBtn b').textContent=liked?'♥':'♡';document.getElementById('likeCount').textContent=liked?'1':'0'}
+function openPublish(){document.getElementById('publishModal').classList.add('open')}
+function closePublish(){document.getElementById('publishModal').classList.remove('open')}
+function notice(t){alert(t)}
+function demoPublish(){const f=document.getElementById('media').files[0];const c=document.getElementById('caption').value.trim();if(!f&&!c){alert('Ajoute une légende ou choisis un média.');return}alert('Merci ! Ton brouillon est prêt. La publication en ligne sera activée après la configuration du stockage et des comptes.');closePublish()}
+async function sharePage(){if(navigator.share){try{await navigator.share({title:'JPS Chat',text:'Découvre JPS Chat !',url:location.href})}catch(e){}}else{try{await navigator.clipboard.writeText(location.href);alert('Lien copié.')}catch(e){alert('JPS Chat')}}}
+</script>
+</body>
+</html>
