@@ -97,5 +97,46 @@ supabaseClient.auth.getSession().then(({ data, error }) => {
   }
 });
 </script>
+  <div id="authBox" style="max-width:400px;margin:25px auto;padding:20px;background:#151515;border:1px solid #333;border-radius:15px;color:white">
+  <h2 style="text-align:center">Bienvenue sur JPS Chat</h2>
+  <input id="authEmail" type="email" placeholder="Adresse e-mail" style="width:100%;padding:12px;margin:8px 0">
+  <input id="authPassword" type="password" placeholder="Mot de passe" style="width:100%;padding:12px;margin:8px 0">
+  <button onclick="registerUser()" style="width:100%;padding:12px;background:#f02d3a;color:white;border:0;border-radius:8px;margin:6px 0">Créer un compte</button>
+  <button onclick="loginUser()" style="width:100%;padding:12px;background:#333;color:white;border:0;border-radius:8px">Se connecter</button>
+  <p id="authMessage" style="text-align:center;color:#aaa"></p>
+</div>
+
+<script>
+async function registerUser(){
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  const message=document.getElementById('authMessage');
+
+  if(!email || password.length<6){
+    message.textContent="Entre un e-mail valide et un mot de passe de 6 caractères minimum.";
+    return;
+  }
+
+  const {data,error}=await supabaseClient.auth.signUp({
+    email:email,
+    password:password
+  });
+
+  message.textContent=error ? error.message : "Inscription réussie ! Vérifie ton e-mail si une confirmation est demandée.";
+}
+
+async function loginUser(){
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  const message=document.getElementById('authMessage');
+
+  const {data,error}=await supabaseClient.auth.signInWithPassword({
+    email:email,
+    password:password
+  });
+
+  message.textContent=error ? error.message : "Connexion réussie à JPS Chat !";
+}
+     </script>
 </body>
 </html>
