@@ -165,6 +165,33 @@ async function loginUser(){
     message.textContent = "Erreur : " + error.message;
   }
 }
+  async function resendConfirmation(){
+  const email = document.getElementById('authEmail').value.trim();
+  const message = document.getElementById('authMessage');
+
+  if (!email) {
+    message.textContent = "Entre ton adresse e-mail.";
+    return;
+  }
+
+  message.textContent = "Envoi en cours...";
+
+  try {
+    const { error } = await supabaseClient.auth.resend({
+      type: 'signup',
+      email: email,
+      options: {
+        emailRedirectTo: 'https://jeanpaullugozi-oss.github.io/jps_chat/'
+      }
+    });
+
+    if (error) throw error;
+
+    message.textContent = "Nouvel e-mail envoyé ! Vérifie ta boîte Gmail.";
+  } catch (error) {
+    message.textContent = "Erreur : " + error.message;
+  }
+  }
 </script>
 </body>
 </html>
