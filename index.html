@@ -39,6 +39,14 @@ button{font:inherit;cursor:pointer;border:0;color:inherit}
     <button onclick="notice('Les profils seront connectés aux comptes utilisateurs dans une prochaine étape.')"><span class="ico">◎</span>Profil</button>
   </nav>
 </aside>
+  <div id="authBox" style="max-width:400px;margin:25px auto;padding:20px;background:#151515;border:1px solid #333;border-radius:15px;color:white">
+  <h2 style="text-align:center">Bienvenue sur JPS Chat</h2>
+  <input id="authEmail" type="email" placeholder="Adresse e-mail" style="width:100%;padding:12px;margin:8px 0">
+  <input id="authPassword" type="password" placeholder="Mot de passe" style="width:100%;padding:12px;margin:8px 0">
+  <button onclick="signUp()" class="redbtn">Créer un compte</button>
+  <button onclick="signIn()" class="redbtn">Se connecter</button>
+  <p id="authMessage"></p>
+  </div>
 <main class="main">
   <header class="top"><div><h1>JPS Chat</h1><small>Exprime-toi. Partage. Inspire.</small></div><button class="redbtn" onclick="openPublish()">＋ Publier</button></header>
   <section class="feed">
@@ -96,6 +104,44 @@ supabaseClient.auth.getSession().then(({ data, error }) => {
     console.log("Session :", data.session);
   }
 });
+  async function signUp() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const message = document.getElementById('authMessage');
+
+  if (!email || !password) {
+    message.textContent = "Remplis tous les champs.";
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.textContent = error.message;
+  } else {
+    message.textContent = "Compte créé ! Vérifie ton e-mail si une confirmation est demandée.";
+  }
+}
+
+async function signIn() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const message = document.getElementById('authMessage');
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.textContent = error.message;
+  } else {
+    message.textContent = "Connexion réussie ! Bienvenue sur JPS Chat.";
+  }
+}
 </script>
   <div id="authBox" style="max-width:400px;margin:25px auto;padding:20px;background:#151515;border:1px solid #333;border-radius:15px;color:white">
   <h2 style="text-align:center">Bienvenue sur JPS Chat</h2>
